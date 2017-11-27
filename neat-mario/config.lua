@@ -1,7 +1,8 @@
 local _M = {}
 
 _M.NeatConfig = {
-Filename = "DP1.state",
+--Filename = "DP1.state",
+Filename = "C:/Users/mmill/Downloads/BizHawk-2.2/Lua/SNES/neat-mario/pool/DP1.state",
 Population = 300,
 DeltaDisjoint = 2.0,
 DeltaWeights = 0.4,

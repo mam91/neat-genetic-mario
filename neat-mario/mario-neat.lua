@@ -620,7 +620,8 @@ function newGeneration()
 	
 	pool.generation = pool.generation + 1
 	
-	writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
+	--writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
+	writeFile(forms.gettext(saveLoadFile) .. ".gen" .. pool.generation .. ".pool")
 end
 	
 function initializePool()
@@ -640,6 +641,10 @@ function initializeRun()
 	pool.currentFrame = 0
 	timeout = config.NeatConfig.TimeoutConstant
 	game.clearJoypad()
+	startCoins = game.getCoins()
+	startScore = game.getScore()
+	checkMarioCollision = true
+	marioHitCounter = 0
 	
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
@@ -894,7 +899,7 @@ function loadFile(filename)
         pool = newPool()
         pool.generation = file:read("*number")
         pool.maxFitness = file:read("*number")
-        forms.settext(maxFitnessLabel, "Max Fitness: " .. math.floor(pool.maxFitness))
+        forms.settext(MaxLabel, "Max Fitness: " .. math.floor(pool.maxFitness))
         local numSpecies = file:read("*number")
         for s=1,numSpecies do
                 local species = newSpecies()
@@ -959,8 +964,9 @@ function flipState()
 end
  
 function loadPool()
-	--filename = forms.openfile("DP1.state.pool","C:\Users\mmill\Downloads\BizHawk-2.2\Lua\SNES\neat-mario") 
-	local filename = forms.gettext(saveLoadFile)
+	filename = forms.openfile("DP1.state.pool","C:\Users\mmill\Downloads\BizHawk-2.2\Lua\SNES\neat-mario\pool") 
+	--local filename = forms.gettext(saveLoadFile)
+	forms.settext(saveLoadFile, filename)
 	loadFile(filename)
 end
 
@@ -980,7 +986,7 @@ function playTop()
 	pool.currentSpecies = maxs
 	pool.currentGenome = maxg
 	pool.maxFitness = maxfitness
-	forms.settext(maxFitnessLabel, "Max Fitness: " .. math.floor(pool.maxFitness))
+	forms.settext(MaxLabel, "Max Fitness: " .. math.floor(pool.maxFitness))
 	initializeRun()
 	pool.currentFrame = pool.currentFrame + 1
 	return
@@ -990,16 +996,21 @@ function onExit()
 	forms.destroy(form)
 end
 
-writeFile("temp.pool")
+writeFile("C:/Users/mmill/Downloads/BizHawk-2.2/Lua/SNES/neat-mario/pool/temp.pool")
 
 event.onexit(onExit)
 
 GenerationLabel = forms.label(form, "Generation: " .. pool.generation, 5, 5)
 SpeciesLabel = forms.label(form, "Species: " .. pool.currentSpecies, 130, 5)
 GenomeLabel = forms.label(form, "Genome: " .. pool.currentGenome, 230, 5)
+MeasuredLabel = forms.label(form, "Measured: " .. "", 330, 5)
 
 FitnessLabel = forms.label(form, "Fitness: " .. "", 5, 30)
-maxFitnessLabel = forms.label(form, "Max Fitness: " , 130, 30)
+MaxLabel = forms.label(form, "Maximum: " .. "", 130, 30)
+
+CoinsLabel = forms.label(form, "Coins: " .. "", 5, 65)
+ScoreLabel = forms.label(form, "Score: " .. "", 130, 65)
+DmgLabel = forms.label(form, "Damage: " .. "", 230, 65)
 
 startButton = forms.button(form, "Start", flipState, 155, 102)
 
@@ -1011,23 +1022,14 @@ playTopButton = forms.button(form, "Play Top", playTop, 230, 102)
 saveLoadFile = forms.textbox(form, config.NeatConfig.Filename .. ".pool", 170, 25, nil, 5, 148)
 saveLoadLabel = forms.label(form, "Save/Load:", 5, 129)
 
-hideBanner = forms.checkbox(form, "Hide Banner", 5, 190)
-
-
 while true do
-	local backgroundColor = 0xD0FFFFFF
-	if not forms.ischecked(hideBanner) then
-		gui.drawBox(0, 0, 300, 26, backgroundColor, backgroundColor)
-	end
 	
 	if config.Running == true then
 
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
 	
-	--if forms.ischecked(showNetwork) then
-		displayGenome(genome)
-	--end
+	displayGenome(genome)
 	
 	if pool.currentFrame%5 == 0 then
 		evaluateCurrent()
@@ -1041,14 +1043,41 @@ while true do
 		timeout = config.NeatConfig.TimeoutConstant
 	end
 	
-	timeout = timeout - 1
+	local hitTimer = game.getMarioHitTimer()
 	
+	if checkMarioCollision == true then
+		if hitTimer > 0 then
+			marioHitCounter = marioHitCounter + 1
+			console.writeline("Mario took damage, hit counter: " .. marioHitCounter)
+			checkMarioCollision = false
+		end
+	end
+	
+	if hitTimer == 0 then
+		checkMarioCollision = true
+	end
+	
+	timeout = timeout - 1
 	
 	local timeoutBonus = pool.currentFrame / 4
 	if timeout + timeoutBonus <= 0 then
-		local fitness = rightmost - pool.currentFrame / 2
+	
+		local coins = game.getCoins() - startCoins
+		local score = game.getScore() - startScore
+		
+		console.writeline("Coins: " .. coins .. " score: " .. score)
+
+		local coinScoreFitness = (coins * 50) + (score * 0.2)
+		if (coins + score) > 0 then 
+			console.writeline("Coins and Score added " .. coinScoreFitness .. " fitness")
+		end
+		
+		local hitPenalty = marioHitCounter * 200
+		
+		local fitness = coinScoreFitness - hitPenalty + rightmost - pool.currentFrame / 2
 		if rightmost > 4816 then
 			fitness = fitness + 1000
+			console.writeline("!!!!!!Beat level!!!!!!!")
 		end
 		if fitness == 0 then
 			fitness = -1
@@ -1057,11 +1086,11 @@ while true do
 		
 		if fitness > pool.maxFitness then
 			pool.maxFitness = fitness
-			writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
+			--writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
+			writeFile(forms.gettext(saveLoadFile) .. ".gen" .. pool.generation .. ".pool")
 		end
 		
 		console.writeline("Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " fitness: " .. fitness)
-		
 		pool.currentSpecies = 1
 		pool.currentGenome = 1
 		while fitnessAlreadyMeasured() do
@@ -1080,19 +1109,17 @@ while true do
 			end
 		end
 	end
-	if not forms.ischecked(hideBanner) then
-		gui.drawText(0, 0, "Gen " .. pool.generation .. " species " .. pool.currentSpecies .. " genome " .. pool.currentGenome .. " (" .. math.floor(measured/total*100) .. "%)", 0xFF000000, 11)
-		gui.drawText(0, 12, "Fitness: " .. math.floor(rightmost - (pool.currentFrame) / 2 - (timeout + timeoutBonus)*2/3), 0xFF000000, 11)
-		gui.drawText(100, 12, "Max Fitness: " .. math.floor(pool.maxFitness), 0xFF000000, 11)
-		forms.settext(maxFitnessLabel, "Max Fitness: " .. math.floor(pool.maxFitness))
-	end
 	
 	forms.settext(FitnessLabel, "Fitness: " .. math.floor(rightmost - (pool.currentFrame) / 2 - (timeout + timeoutBonus)*2/3))
-	forms.settext(maxFitnessLabel, "Max Fitness: " .. math.floor(pool.maxFitness))
 	forms.settext(GenerationLabel, "Generation: " .. pool.generation)
 	forms.settext(SpeciesLabel, "Species: " .. pool.currentSpecies)
 	forms.settext(GenomeLabel, "Genome: " .. pool.currentGenome)
-		
+	forms.settext(MaxLabel, "Maximum: " .. math.floor(pool.maxFitness))
+	forms.settext(MeasuredLabel, "Measured: " .. math.floor(measured/total*100) .. "%")
+	forms.settext(CoinsLabel, "Coins: " .. (game.getCoins() - startCoins))
+	forms.settext(ScoreLabel, "Score: " .. (game.getScore() - startScore))
+	forms.settext(DmgLabel, "Damage: " .. marioHitCounter)
+
 	pool.currentFrame = pool.currentFrame + 1
 	
 	end

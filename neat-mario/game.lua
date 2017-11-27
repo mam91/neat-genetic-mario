@@ -12,6 +12,36 @@ function _M.getPositions()
 	screenY = marioY-layer1y
 end
 
+function _M.getCoins()
+	local coins = memory.readbyte(0x0DBF)
+	return coins
+end
+
+function _M.getScore()
+	local scoreLeft = memory.read_s16_le(0x0F34)
+	local scoreRight = memory.read_s16_le(0x0F36)
+	local score = ( scoreLeft * 10 ) + scoreRight
+	return score
+end
+
+function _M.getMarioHit(alreadyHit)
+	local timer = memory.read_s16_le(0x1497)
+	if timer > 0 then
+		if alreadyHit == false then
+			return true
+		else
+			return false
+		end
+	else
+		return false
+	end
+end
+
+function _M.getMarioHitTimer()
+	local timer = memory.read_s16_le(0x1497)
+	return timer
+end
+
 function _M.getTile(dx, dy)
 	x = math.floor((marioX+dx+8)/16)
 	y = math.floor((marioY+dy)/16)
