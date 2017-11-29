@@ -1,7 +1,6 @@
 --Notes here
 config = require "config"
 local _M = {}
-
 function _M.getPositions()
 	marioX = memory.read_s16_le(0x94)
 	marioY = memory.read_s16_le(0x96)
@@ -9,8 +8,8 @@ function _M.getPositions()
 	local layer1x = memory.read_s16_le(0x1A);
 	local layer1y = memory.read_s16_le(0x1C);
 		
-	_M.screenX = marioX-layer1x
-	_M.screenY = marioY-layer1y
+	screenX = marioX-layer1x
+	screenY = marioY-layer1y
 end
 
 function _M.getCoins()
@@ -85,16 +84,10 @@ function _M.getInputs()
 	extended = _M.getExtendedSprites()
 	
 	local inputs = {}
-	local inputDeltaDistance = {}
-	
-	local layer1x = memory.read_s16_le(0x1A);
-	local layer1y = memory.read_s16_le(0x1C);
-	
 	
 	for dy=-config.BoxRadius*16,config.BoxRadius*16,16 do
 		for dx=-config.BoxRadius*16,config.BoxRadius*16,16 do
 			inputs[#inputs+1] = 0
-			inputDeltaDistance[#inputDeltaDistance+1] = 1
 			
 			tile = _M.getTile(dx, dy)
 			if tile == 1 and marioY+dy < 0x1B0 then
@@ -106,12 +99,6 @@ function _M.getInputs()
 				disty = math.abs(sprites[i]["y"] - (marioY+dy))
 				if distx <= 8 and disty <= 8 then
 					inputs[#inputs] = -1
-					
-					local dist = math.sqrt((distx * distx) + (disty * disty))
-					if dist > 8 then
-						inputDeltaDistance[#inputDeltaDistance] = mathFunctions.squashDistance(dist)
-						--gui.drawLine(screenX, screenY, sprites[i]["x"] - layer1x, sprites[i]["y"] - layer1y, 0x50000000)
-					end
 				end
 			end
 
@@ -119,26 +106,13 @@ function _M.getInputs()
 				distx = math.abs(extended[i]["x"] - (marioX+dx))
 				disty = math.abs(extended[i]["y"] - (marioY+dy))
 				if distx < 8 and disty < 8 then
-					
-					--console.writeline(screenX .. "," .. screenY .. " to " .. extended[i]["x"]-layer1x .. "," .. extended[i]["y"]-layer1y) 
 					inputs[#inputs] = -1
-					local dist = math.sqrt((distx * distx) + (disty * disty))
-					if dist > 8 then
-						inputDeltaDistance[#inputDeltaDistance] = mathFunctions.squashDistance(dist)
-						--gui.drawLine(screenX, screenY, extended[i]["x"] - layer1x, extended[i]["y"] - layer1y, 0x50000000)
-					end
-					--if dist > 100 then
-						--dw = mathFunctions.squashDistance(dist)
-						--console.writeline(dist .. " to " .. dw)
-						--gui.drawLine(screenX, screenY, extended[i]["x"] - layer1x, extended[i]["y"] - layer1y, 0x50000000)
-					--end
-					--inputs[#inputs] = {["value"]=-1, ["dw"]=dw}
 				end
 			end
 		end
 	end
 	
-	return inputs, inputDeltaDistance
+	return inputs
 end
 
 function _M.clearJoypad()

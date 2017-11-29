@@ -107,7 +107,7 @@ function newNeuron()
 	local neuron = {}
 	neuron.incoming = {}
 	neuron.value = 0.0
-	--neuron.dw = 1
+	
 	return neuron
 end
 
@@ -143,18 +143,15 @@ function generateNetwork(genome)
 	genome.network = network
 end
 
-function evaluateNetwork(network, inputs, inputDeltas)
+function evaluateNetwork(network, inputs)
 	table.insert(inputs, 1)
-	table.insert(inputDeltas,99)
 	if #inputs ~= Inputs then
 		console.writeline("Incorrect number of neural network inputs.")
 		return {}
 	end
 	
-
 	for i=1,Inputs do
-		network.neurons[i].value = inputs[i] * inputDeltas[i]
-		--network.neurons[i].value = inputs[i]
+		network.neurons[i].value = inputs[i]
 	end
 	
 	for _,neuron in pairs(network.neurons) do
@@ -658,11 +655,9 @@ end
 function evaluateCurrent()
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
-	
-	local inputDeltas = {}
-	inputs, inputDeltas = game.getInputs()
-	
-	controller = evaluateNetwork(genome.network, inputs, inputDeltas)
+
+	inputs = game.getInputs()
+	controller = evaluateNetwork(genome.network, inputs)
 	
 	if controller["P1 Left"] and controller["P1 Right"] then
 		controller["P1 Left"] = false
@@ -969,7 +964,7 @@ function flipState()
 end
  
 function loadPool()
-	filename = forms.openfile("DP1.state.pool","C:/Users/mmill/Downloads/BizHawk-2.2/Lua/SNES/neat-mario/pool/") 
+	filename = forms.openfile("DP1.state.pool","C:\Users\mmill\Downloads\BizHawk-2.2\Lua\SNES\neat-mario\pool") 
 	--local filename = forms.gettext(saveLoadFile)
 	forms.settext(saveLoadFile, filename)
 	loadFile(filename)
@@ -1011,7 +1006,7 @@ GenomeLabel = forms.label(form, "Genome: " .. pool.currentGenome, 230, 5)
 MeasuredLabel = forms.label(form, "Measured: " .. "", 330, 5)
 
 FitnessLabel = forms.label(form, "Fitness: " .. "", 5, 30)
-MaxLabel = forms.label(form, "Max: " .. "", 130, 30)
+MaxLabel = forms.label(form, "Maximum: " .. "", 130, 30)
 
 CoinsLabel = forms.label(form, "Coins: " .. "", 5, 65)
 ScoreLabel = forms.label(form, "Score: " .. "", 130, 65)
@@ -1053,7 +1048,7 @@ while true do
 	if checkMarioCollision == true then
 		if hitTimer > 0 then
 			marioHitCounter = marioHitCounter + 1
-			--console.writeline("Mario took damage, hit counter: " .. marioHitCounter)
+			console.writeline("Mario took damage, hit counter: " .. marioHitCounter)
 			checkMarioCollision = false
 		end
 	end
@@ -1070,14 +1065,14 @@ while true do
 		local coins = game.getCoins() - startCoins
 		local score = game.getScore() - startScore
 		
-		--console.writeline("Coins: " .. coins .. " score: " .. score)
+		console.writeline("Coins: " .. coins .. " score: " .. score)
 
 		local coinScoreFitness = (coins * 50) + (score * 0.2)
 		if (coins + score) > 0 then 
 			console.writeline("Coins and Score added " .. coinScoreFitness .. " fitness")
 		end
 		
-		local hitPenalty = marioHitCounter * 100
+		local hitPenalty = marioHitCounter * 200
 		
 		local fitness = coinScoreFitness - hitPenalty + rightmost - pool.currentFrame / 2
 		if rightmost > 4816 then
@@ -1115,12 +1110,11 @@ while true do
 		end
 	end
 	
-	gui.drawEllipse(game.screenX-84, game.screenY-84, 192, 192, 0x50000000) 
 	forms.settext(FitnessLabel, "Fitness: " .. math.floor(rightmost - (pool.currentFrame) / 2 - (timeout + timeoutBonus)*2/3))
 	forms.settext(GenerationLabel, "Generation: " .. pool.generation)
 	forms.settext(SpeciesLabel, "Species: " .. pool.currentSpecies)
 	forms.settext(GenomeLabel, "Genome: " .. pool.currentGenome)
-	forms.settext(MaxLabel, "Max: " .. math.floor(pool.maxFitness))
+	forms.settext(MaxLabel, "Maximum: " .. math.floor(pool.maxFitness))
 	forms.settext(MeasuredLabel, "Measured: " .. math.floor(measured/total*100) .. "%")
 	forms.settext(CoinsLabel, "Coins: " .. (game.getCoins() - startCoins))
 	forms.settext(ScoreLabel, "Score: " .. (game.getScore() - startScore))
