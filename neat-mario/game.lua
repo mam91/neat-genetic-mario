@@ -26,7 +26,7 @@ function _M.getScore()
 end
 
 function _M.getMarioHit(alreadyHit)
-	local timer = memory.read_s16_le(0x1497)
+	local timer = memory.readbyte(0x1497)
 	if timer > 0 then
 		if alreadyHit == false then
 			return true
@@ -39,7 +39,7 @@ function _M.getMarioHit(alreadyHit)
 end
 
 function _M.getMarioHitTimer()
-	local timer = memory.read_s16_le(0x1497)
+	local timer = memory.readbyte(0x1497)
 	return timer
 end
 
