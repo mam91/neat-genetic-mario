@@ -969,7 +969,7 @@ function flipState()
 end
  
 function loadPool()
-	filename = forms.openfile("DP1.state.pool","C:/Users/mmill/Downloads/BizHawk-2.2/Lua/SNES/neat-mario/pool/") 
+	filename = forms.openfile("DP1.state.pool",config.PoolDir) 
 	--local filename = forms.gettext(saveLoadFile)
 	forms.settext(saveLoadFile, filename)
 	loadFile(filename)
@@ -1001,7 +1001,7 @@ function onExit()
 	forms.destroy(form)
 end
 
-writeFile("C:/Users/mmill/Downloads/BizHawk-2.2/Lua/SNES/neat-mario/pool/temp.pool")
+writeFile(config.PoolDir.."temp.pool")
 
 event.onexit(onExit)
 
