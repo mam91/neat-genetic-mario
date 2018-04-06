@@ -1,6 +1,7 @@
 --Update to Seth-Bling's MarI/O app
 
 config = require "config"
+spritelist = require "spritelist"
 game = require "game"
 mathFunctions = require "mathFunctions"
 
@@ -1026,7 +1027,8 @@ playTopButton = forms.button(form, "Play Top", playTop, 230, 102)
 
 saveLoadFile = forms.textbox(form, config.NeatConfig.Filename .. ".pool", 170, 25, nil, 5, 148)
 saveLoadLabel = forms.label(form, "Save/Load:", 5, 129)
-
+spritelist.InitSpriteList()
+spritelist.InitExtSpriteList()
 while true do
 	
 	if config.Running == true then

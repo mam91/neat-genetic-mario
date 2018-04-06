@@ -5,10 +5,10 @@ Update to [Seth Bling's Mar I/O][1] lua code, forked from [mam91/Neat-Genetic-Ma
 * [x] [Fixed function which determines if Mario got hit].
 * [x] [Added a variable for BizHawk path to make setup easier].
 * * [x] [Added instructions to Readme][Readme#1].
+* [x] [Include lists of good/neutral for both sprites and extended sprites].
 * [ ] Include powerups to fitness calculation. (as antagonist to the damage counter)
 * [ ] Option to start with specific powerup.
 * [ ] Give bonus for received 1-Ups.
-* [ ] Include lists of good/neutral for both sprites and extended sprites.
 
 ## Readme from [original repository][2]
 > Added coins/score/damage to fitness calculation.
@@ -46,6 +46,7 @@ B19ED489 | CDD3C8C37322978CA8669B34BC89C804 | 6B47BB75D16514B6A476AA0C73A683A2A4
 [Fixed function which determines if Mario got hit]:https://github.com/mam91/Neat-Genetic-Mario/commit/d5ec3aaded533f1c5061e144e6c3b250d6f63e28
 [Added a variable for BizHawk path to make setup easier]:https://github.com/wts42/Neat-Genetic-Mario/commit/9c920eb34be55a69c751cf5e725516a1ab2c6205
 [Readme#1]:https://github.com/wts42/Neat-Genetic-Mario/commit/7b87f31eda57beced08bd360c4ec620c17375e8c
+[Include lists of good/neutral for both sprites and extended sprites]:https://github.com/wts42/Neat-Genetic-Mario/commit/95179cf7b655daca9586980c1248cd0027131330
 [BizHawk]:https://github.com/TASVideos/BizHawk
 [BizHawk prerequesites]:https://github.com/TASVideos/BizHawk-Prereqs/releases
 [BizHawk binaries]:https://github.com/TASVideos/BizHawk/releases
