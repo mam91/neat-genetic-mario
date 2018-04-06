@@ -1,4 +1,4 @@
-# NeatResearch
+# Neat[Tinkering]
 Update to [Seth Bling's Mar I/O][1] lua code, forked from [mam91/Neat-Genetic-Mario][2].
 
 ## (Planned) additions & changes ##
@@ -50,3 +50,5 @@ B19ED489 | CDD3C8C37322978CA8669B34BC89C804 | 6B47BB75D16514B6A476AA0C73A683A2A4
 [BizHawk prerequesites]:https://github.com/TASVideos/BizHawk-Prereqs/releases
 [BizHawk binaries]:https://github.com/TASVideos/BizHawk/releases
 [Super Mario World (USA)]:https://www.google.de/search?q=Super+Mario+World+(USA).sfc
+
+[Tinkering]:http://togelius.blogspot.de/2016/04/the-differences-between-tinkering-and.html
