@@ -1,5 +1,6 @@
 --Notes here
 config = require "config"
+spritelist = require "spritelist"
 local _M = {}
 
 function _M.getPositions()
@@ -57,7 +58,7 @@ function _M.getSprites()
 		if status ~= 0 then
 			spritex = memory.readbyte(0xE4+slot) + memory.readbyte(0x14E0+slot)*256
 			spritey = memory.readbyte(0xD8+slot) + memory.readbyte(0x14D4+slot)*256
-			sprites[#sprites+1] = {["x"]=spritex, ["y"]=spritey}
+			sprites[#sprites+1] = {["x"]=spritex, ["y"]=spritey, ["good"] = spritelist.Sprites[memory.readbyte(0x009e + slot) + 1]}
 		end
 	end		
 		
@@ -71,7 +72,7 @@ function _M.getExtendedSprites()
 		if number ~= 0 then
 			spritex = memory.readbyte(0x171F+slot) + memory.readbyte(0x1733+slot)*256
 			spritey = memory.readbyte(0x1715+slot) + memory.readbyte(0x1729+slot)*256
-			extended[#extended+1] = {["x"]=spritex, ["y"]=spritey}
+			extended[#extended+1] = {["x"]=spritex, ["y"]=spritey, ["good"]  =  spritelist.extSprites[memory.readbyte(0x170B + slot) + 1]}
 		end
 	end		
 		
@@ -105,7 +106,7 @@ function _M.getInputs()
 				distx = math.abs(sprites[i]["x"] - (marioX+dx))
 				disty = math.abs(sprites[i]["y"] - (marioY+dy))
 				if distx <= 8 and disty <= 8 then
-					inputs[#inputs] = -1
+					inputs[#inputs] = sprites[i]["good"]
 					
 					local dist = math.sqrt((distx * distx) + (disty * disty))
 					if dist > 8 then
@@ -121,7 +122,7 @@ function _M.getInputs()
 				if distx < 8 and disty < 8 then
 					
 					--console.writeline(screenX .. "," .. screenY .. " to " .. extended[i]["x"]-layer1x .. "," .. extended[i]["y"]-layer1y) 
-					inputs[#inputs] = -1
+					inputs[#inputs] = extended[i]["good"]
 					local dist = math.sqrt((distx * distx) + (disty * disty))
 					if dist > 8 then
 						inputDeltaDistance[#inputDeltaDistance] = mathFunctions.squashDistance(dist)
