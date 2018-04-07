@@ -26,6 +26,25 @@ function _M.getScore()
 	return score
 end
 
+function _M.getLives()
+	local lives = memory.readbyte(0x0DBE) + 1
+	return lives
+end
+
+function _M.writeLives(lives)
+	memory.writebyte(0x0DBE, lives - 1)
+end
+
+function _M.getPowerup()
+	local powerup = memory.readbyte(0x0019)
+	return powerup
+end
+
+function _M.writePowerup(powerup)
+	memory.writebyte(0x0019, powerup)
+end
+
+
 function _M.getMarioHit(alreadyHit)
 	local timer = memory.readbyte(0x1497)
 	if timer > 0 then
