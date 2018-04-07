@@ -6,9 +6,9 @@ Update to [Seth Bling's Mar I/O][1] lua code, forked from [mam91/Neat-Genetic-Ma
 * [x] [Added a variable for BizHawk path to make setup easier].
 * * [x] [Added instructions to Readme][Readme#1].
 * [x] [Include lists of good/neutral for both sprites and extended sprites].
-* [ ] Include powerups to fitness calculation. (as antagonist to the damage counter)
-* [ ] Option to start with specific powerup.
-* [ ] Give bonus for received 1-Ups.
+* [x] Include powerups to fitness calculation. (as antagonist to the damage counter)
+* [x] Option to start with specific powerup.
+* [x] Give bonus for received 1-Ups.
 
 ## Readme from [original repository][2]
 > Added coins/score/damage to fitness calculation.
