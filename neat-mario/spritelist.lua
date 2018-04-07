@@ -10,7 +10,6 @@ _M.Sprites = {}
 -- Make sure this list is sorted before initialization.
 _M.NeutralSprites = {
 				0x0E,		-- Keyhole.
-				0x21,		-- Moving coin.
 				0x2C,		-- Yoshi egg Red/Blue/Yellow/Blue (X&3).
 				0x2D,		-- Baby green Yoshi.
 				0x2F,		-- Portable spring board.
@@ -19,9 +18,6 @@ _M.NeutralSprites = {
 				0x41,		-- Dolphin, horizontal.
 				0x42,		-- Dolphin2, horizontal.
 				0x43,		-- Dolphin, vertical.
-				0x45,		-- Directional coins, no time limit.
-				0x47,		-- Swimming/Jumping fish, doesn't need water. (!)
-				0x48,		-- Diggin' Chuck's rock.
 				0x49,		-- Growing/shrinking pipe end.
 				0x4A,		-- Goal Point Question Sphere.
 				0x52,		-- Moving ledge hole in ghost house.
@@ -49,7 +45,6 @@ _M.NeutralSprites = {
 				0x6D,		-- Invisible solid block.
 				0x79,		-- Growing Vine.
 				0x7C,		-- ???
-				0x7D,		-- Balloon.
 				0x80,		-- Key.
 				0x81,		-- Changing item from a translucent block.
 				0x87,		-- Lakitu's cloud, no time limit. (!)
@@ -71,6 +66,8 @@ _M.NeutralSprites = {
 
 -- Make sure this list is sorted before initialization.
 _M.GoodSprites = {
+				0x21,		-- Moving coin.
+				0x45,		-- Directional coins, no time limit.
 				0x74,		-- Mushroom.
 				0x75,		-- Flower.
 				0x76,		-- Star.
@@ -148,6 +145,8 @@ _M.BadSprites = {
 				0x3F,		-- Para-Goomba.
 				0x40,		-- Para-Bomb.
 				0x44,		-- Torpedo Ted.
+				0x47,		-- Swimming/Jumping fish, doesn't need water. (!)
+				0x48,		-- Diggin' Chuck's rock.
 				0x46,		-- Diggin' Chuck.
 				0x4B,		-- Pipe dwelling Lakitu.
 				0x4C,		-- Exploding Block, fish/goomba/Koopa/Koopa with shell (X&3).

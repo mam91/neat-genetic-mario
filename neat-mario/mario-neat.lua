@@ -641,15 +641,20 @@ end
 
 function initializeRun()
 	savestate.load(config.NeatConfig.Filename);
+	if config.StartPowerup ~= NIL then
+		game.writePowerup(config.StartPowerup)
+	end
 	rightmost = 0
 	pool.currentFrame = 0
 	timeout = config.NeatConfig.TimeoutConstant
 	game.clearJoypad()
 	startCoins = game.getCoins()
 	startScore = game.getScore()
+	startLives = game.getLives()
 	checkMarioCollision = true
 	marioHitCounter = 0
-	
+	powerUpCounter = 0
+	powerUpBefore = game.getPowerup()
 	local species = pool.species[pool.currentSpecies]
 	local genome = species.genomes[pool.currentGenome]
 	generateNetwork(genome)
@@ -1015,8 +1020,10 @@ FitnessLabel = forms.label(form, "Fitness: " .. "", 5, 30)
 MaxLabel = forms.label(form, "Max: " .. "", 130, 30)
 
 CoinsLabel = forms.label(form, "Coins: " .. "", 5, 65)
-ScoreLabel = forms.label(form, "Score: " .. "", 130, 65)
-DmgLabel = forms.label(form, "Damage: " .. "", 230, 65)
+ScoreLabel = forms.label(form, "Score: " .. "", 130, 65, 90, 14)
+LivesLabel = forms.label(form, "Lives: " .. "", 130, 80, 90, 14)
+DmgLabel = forms.label(form, "Damage: " .. "", 230, 65, 110, 14)
+PowerUpLabel = forms.label(form, "PowerUp: " .. "", 230, 80, 110, 14)
 
 startButton = forms.button(form, "Start", flipState, 155, 102)
 
@@ -1064,6 +1071,16 @@ while true do
 		checkMarioCollision = true
 	end
 	
+	powerUp = game.getPowerup()
+	if powerUp > 0 then
+		if powerUp ~= powerUpBefore then
+			powerUpCounter = powerUpCounter+1
+			powerUpBefore = powerUp
+		end
+	end
+	
+	Lives = game.getLives()
+
 	timeout = timeout - 1
 	
 	local timeoutBonus = pool.currentFrame / 4
@@ -1080,8 +1097,16 @@ while true do
 		end
 		
 		local hitPenalty = marioHitCounter * 100
-		
-		local fitness = coinScoreFitness - hitPenalty + rightmost - pool.currentFrame / 2
+		local powerUpBonus = powerUpCounter * 100
+	
+		local fitness = coinScoreFitness - hitPenalty + powerUpBonus + rightmost - pool.currentFrame / 2
+
+		if startLives < Lives then
+			local ExtraLiveBonus = (Lives - startLives)*1000
+			fitness = fitness + ExtraLiveBonus
+			console.writeline("ExtraLiveBonus added " .. ExtraLiveBonus)
+		end
+
 		if rightmost > 4816 then
 			fitness = fitness + 1000
 			console.writeline("!!!!!!Beat level!!!!!!!")
@@ -1126,7 +1151,9 @@ while true do
 	forms.settext(MeasuredLabel, "Measured: " .. math.floor(measured/total*100) .. "%")
 	forms.settext(CoinsLabel, "Coins: " .. (game.getCoins() - startCoins))
 	forms.settext(ScoreLabel, "Score: " .. (game.getScore() - startScore))
+	forms.settext(LivesLabel, "Lives: " .. Lives)
 	forms.settext(DmgLabel, "Damage: " .. marioHitCounter)
+	forms.settext(PowerUpLabel, "PowerUp: " .. powerUpCounter)
 
 	pool.currentFrame = pool.currentFrame + 1
 	
