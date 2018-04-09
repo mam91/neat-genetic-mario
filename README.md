@@ -9,6 +9,8 @@ Update to [Seth Bling's Mar I/O][1] lua code, forked from [mam91/Neat-Genetic-Ma
 * [x] Include powerups to fitness calculation. (as antagonist to the damage counter)
 * [x] Option to start with specific powerup.
 * [x] Give bonus for received 1-Ups.
+* [ ] Move bonus multiplicators to config.
+* [ ] Show fitness calculation in GUI.
 
 ## Readme from [original repository][2]
 > Added coins/score/damage to fitness calculation.
