@@ -1,8 +1,37 @@
 local _M = {}
 
+--[[
+	Change BizhawkDir to your BizHawk directory.
+--]]
+--_M.BizhawkDir = "C:/Users/mmill/Downloads/BizHawk-2.2/"
+_M.BizhawkDir = "X:/B2_BizHawkLab/BizHawk-2.2.2/"
+
+_M.StateDir = _M.BizhawkDir .. "Lua/SNES/neat-mario/state/"
+_M.PoolDir = _M.BizhawkDir .. "Lua/SNES/neat-mario/pool/"
+
+--[[
+	At the moment the first in list will get loaded.
+	Rearrange for other savestates. (will be redone soon)
+--]]
+_M.State = {
+ 			"DP1.state",				-- Donut Plains 1
+			"YI1.state",				-- Yoshi's Island 1
+			"YI2.state",				-- Yoshi's Island 2
+}
+
+--[[
+	Start game with specific powerup.
+	0 = No powerup
+	1 = Mushroom
+	2 = Feather
+	3 = Flower
+	Comment out to disable.
+--]]
+_M.StartPowerup = 0
+
 _M.NeatConfig = {
 --Filename = "DP1.state",
-Filename = "C:/Users/mmill/Downloads/BizHawk-2.2/Lua/SNES/neat-mario/pool/DP1.state",
+Filename = _M.PoolDir .. _M.State[1],
 Population = 300,
 DeltaDisjoint = 2.0,
 DeltaWeights = 0.4,
