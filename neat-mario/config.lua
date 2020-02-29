@@ -4,7 +4,7 @@ local _M = {}
 	Change BizhawkDir to your BizHawk directory.
 --]]
 --_M.BizhawkDir = "C:\\Users\\mmill\\Downloads\\BizHawk-2.2\\"
-_M.BizhawkDir = "C:\\Users\\mmill\Downloads\\BizHawk-2.2\\"
+_M.BizhawkDir = "C:\\Users\\mmill\\Downloads\\BizHawk-2.2\\"
 
 _M.StateDir = _M.BizhawkDir .. "Lua\\SNES\\neat-mario\\state\\"
 _M.PoolDir = _M.BizhawkDir .. "Lua\\SNES\\neat-mario\\pool\\"
