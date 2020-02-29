@@ -975,8 +975,9 @@ function flipState()
 end
  
 function loadPool()
-	filename = forms.openfile("DP1.state.pool",config.PoolDir) 
+	--filename = forms.openfile("DP1.state.pool",config.PoolDir) 
 	--local filename = forms.gettext(saveLoadFile)
+	filename=forms.gettext(saveLoadFile)
 	forms.settext(saveLoadFile, filename)
 	loadFile(filename)
 end

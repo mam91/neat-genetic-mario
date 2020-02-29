@@ -3,11 +3,11 @@ local _M = {}
 --[[
 	Change BizhawkDir to your BizHawk directory.
 --]]
---_M.BizhawkDir = "C:/Users/mmill/Downloads/BizHawk-2.2/"
-_M.BizhawkDir = "X:/B2_BizHawkLab/BizHawk-2.2.2/"
+--_M.BizhawkDir = "C:\\Users\\mmill\\Downloads\\BizHawk-2.2\\"
+_M.BizhawkDir = "C:\\Users\\mmill\\Downloads\\BizHawk-2.2\\"
 
-_M.StateDir = _M.BizhawkDir .. "Lua/SNES/neat-mario/state/"
-_M.PoolDir = _M.BizhawkDir .. "Lua/SNES/neat-mario/pool/"
+_M.StateDir = _M.BizhawkDir .. "Lua\\SNES\\neat-mario\\state\\"
+_M.PoolDir = _M.BizhawkDir .. "Lua\\SNES\\neat-mario\\pool\\"
 
 --[[
 	At the moment the first in list will get loaded.
