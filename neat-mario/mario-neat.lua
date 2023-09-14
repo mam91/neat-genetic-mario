@@ -905,7 +905,7 @@ function mysplit(inputstr, sep)
 end
 
 function loadFile(filename)
-		print("Loading pool from " .. filename)
+	print("Loading pool from " .. filename)
         local file = io.open(filename, "r")
         pool = newPool()
         pool.generation = file:read("*number")
@@ -931,18 +931,11 @@ function loadFile(filename)
                         end
                         local numGenes = file:read("*number")
                         for n=1,numGenes do
-
+				
                                 local gene = newGene()
                                 local enabled
 								
-								local geneStr = file:read("*line")
-								local geneArr = mysplit(geneStr)
-								gene.into = tonumber(geneArr[1])
-								gene.out = tonumber(geneArr[2])
-								gene.weight = tonumber(geneArr[3])
-								gene.innovation = tonumber(geneArr[4])
-								enabled = tonumber(geneArr[5])
-
+				gene.into, gene.out, gene.weight, gene.innovation, enabled = file:read("*number", "*number", "*number", "*number", "*number")
 
                                 if enabled == 0 then
                                         gene.enabled = false
