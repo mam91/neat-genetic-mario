@@ -1,7 +1,9 @@
 --Notes here
 config = require "config"
 spritelist = require "spritelist"
+
 local _M = {}
+memory.usememorydomain("WRAM")
 
 function _M.getPositions()
 	marioX = memory.read_s16_le(0x94)
@@ -66,9 +68,11 @@ end
 function _M.getTile(dx, dy)
 	x = math.floor((marioX+dx+8)/16)
 	y = math.floor((marioY+dy)/16)
-		
-	return memory.readbyte(0x1C800 + math.floor(x/0x10)*0x1B0 + y*0x10 + x%0x10)
+	
+	tile = memory.readbyte(0x1C800 + math.floor(x/0x10)*0x1B0 + y*0x10 + x%0x10)
+	return tile
 end
+
 
 function _M.getSprites()
 	local sprites = {}
@@ -98,6 +102,53 @@ function _M.getExtendedSprites()
 	return extended
 end
 
+--[[
+function _M.getSprites()
+        if gameinfo.getromname() == "Super Mario World (USA)" then
+                local sprites = {}
+                for slot=0,11 do
+                        local status = memory.readbyte(0x14C8+slot)
+                        if status ~= 0 then
+                                spritex = memory.readbyte(0xE4+slot) + memory.readbyte(0x14E0+slot)*256
+                                spritey = memory.readbyte(0xD8+slot) + memory.readbyte(0x14D4+slot)*256
+                                sprites[#sprites+1] = {["x"]=spritex, ["y"]=spritey}
+                        end
+                end            
+               
+                return sprites
+        elseif gameinfo.getromname() == "Super Mario Bros." then
+                local sprites = {}
+                for slot=0,4 do
+                        local enemy = memory.readbyte(0xF+slot)
+                        if enemy ~= 0 then
+                                local ex = memory.readbyte(0x6E + slot)*0x100 + memory.readbyte(0x87+slot)
+                                local ey = memory.readbyte(0xCF + slot)+24
+                                sprites[#sprites+1] = {["x"]=ex,["y"]=ey}
+                        end
+                end
+               
+                return sprites
+        end
+end
+ 
+function _M.getExtendedSprites()
+        if gameinfo.getromname() == "Super Mario World (USA)" then
+                local extended = {}
+                for slot=0,11 do
+                        local number = memory.readbyte(0x170B+slot)
+                        if number ~= 0 then
+                                spritex = memory.readbyte(0x171F+slot) + memory.readbyte(0x1733+slot)*256
+                                spritey = memory.readbyte(0x1715+slot) + memory.readbyte(0x1729+slot)*256
+                                extended[#extended+1] = {["x"]=spritex, ["y"]=spritey}
+                        end
+                end            
+               
+                return extended
+        elseif gameinfo.getromname() == "Super Mario Bros." then
+                return {}
+        end
+end
+--]]
 function _M.getInputs()
 	_M.getPositions()
 	
@@ -110,16 +161,16 @@ function _M.getInputs()
 	local layer1x = memory.read_s16_le(0x1A);
 	local layer1y = memory.read_s16_le(0x1C);
 	
-	
 	for dy=-config.BoxRadius*16,config.BoxRadius*16,16 do
 		for dx=-config.BoxRadius*16,config.BoxRadius*16,16 do
 			inputs[#inputs+1] = 0
 			inputDeltaDistance[#inputDeltaDistance+1] = 1
 			
 			tile = _M.getTile(dx, dy)
-			if tile == 1 and marioY+dy < 0x1B0 then
+			if tile == 0x1 and marioY+dy < 0x1B0 then
 				inputs[#inputs] = 1
 			end
+			
 			
 			for i = 1,#sprites do
 				distx = math.abs(sprites[i]["x"] - (marioX+dx))
