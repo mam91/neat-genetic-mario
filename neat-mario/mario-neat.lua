@@ -8,6 +8,9 @@ mathFunctions = require "mathFunctions"
 Inputs = config.InputSize+1
 Outputs = #config.ButtonNames
 
+stateID = 1
+stateCount = #config.State
+
 function newInnovation()
 	pool.innovation = pool.innovation + 1
 	return pool.innovation
@@ -624,6 +627,15 @@ function newGeneration()
 	
 	pool.generation = pool.generation + 1
 	
+	if config.NeatConfig.LoopStates then
+		StateID = StateID + 1
+		if StateID == StateCount then
+			StateID = 1
+		end
+	end
+	
+	pool.maxFitness = 0
+	
 	--writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
 	writeFile(forms.gettext(saveLoadFile) .. ".gen" .. pool.generation .. ".pool")
 end
@@ -640,7 +652,7 @@ function initializePool()
 end
 
 function initializeRun()
-	savestate.load(config.NeatConfig.Filename);
+	savestate.load(config.StateDir .. config.State[stateID]);
 	if config.StartPowerup ~= NIL then
 		game.writePowerup(config.StartPowerup)
 	end
@@ -682,11 +694,6 @@ function evaluateCurrent()
 	joypad.set(controller)
 end
 
-if pool == nil then
-	initializePool()
-end
-
-
 function nextGenome()
 	pool.currentGenome = pool.currentGenome + 1
 	if pool.currentGenome > #pool.species[pool.currentSpecies].genomes then
@@ -705,12 +712,6 @@ function fitnessAlreadyMeasured()
 	
 	return genome.fitness ~= 0
 end
-
-form = forms.newform(500, 500, "Mario-Neat")
-netPicture = forms.pictureBox(form, 5, 250,470, 200)
-
-
---int forms.pictureBox(int formhandle, [int? x = null], [int? y = null], [int? width = null], [int? height = null]) 
 
 function displayGenome(genome)
 	forms.clear(netPicture,0x80808080)
@@ -1000,6 +1001,15 @@ function onExit()
 	forms.destroy(form)
 end
 
+if pool == nil then
+	initializePool()
+end
+
+form = forms.newform(500, 500, "Mario-Neat")
+netPicture = forms.pictureBox(form, 5, 250,470, 200)
+
+--int forms.pictureBox(int formhandle, [int? x = null], [int? y = null], [int? width = null], [int? height = null]) 
+
 writeFile(config.PoolDir.."temp.pool")
 
 event.onexit(onExit)
@@ -1025,7 +1035,7 @@ saveButton = forms.button(form, "Save", savePool, 5, 102)
 loadButton = forms.button(form, "Load", loadPool, 80, 102)
 playTopButton = forms.button(form, "Play Top", playTop, 230, 102)
 
-saveLoadFile = forms.textbox(form, config.NeatConfig.Filename .. ".pool", 170, 25, nil, 5, 148)
+saveLoadFile = forms.textbox(form, config.PoolDir .. config.TestName .. ".pool", 170, 25, nil, 5, 148)
 saveLoadLabel = forms.label(form, "Save/Load:", 5, 129)
 spritelist.InitSpriteList()
 spritelist.InitExtSpriteList()

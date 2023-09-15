@@ -3,15 +3,19 @@ local _M = {}
 _M.StateDir = "state/"
 _M.PoolDir = "pool/"
 
+_M.TestName = "test1"
+
 --[[
-	At the moment the first in list will get loaded.
-	Rearrange for other savestates. (will be redone soon)
+	If LoopStates in NeatConfig is enabled it will loop through the states in order changing states with each generation.
+	States currents have to be manually added to the list below as well as put in the state folder.
 --]]
 
 _M.State = {
- 			"DP1.state",				-- Donut Plains 1
-			"YI1.state",				-- Yoshi's Island 1
-			"YI2.state",				-- Yoshi's Island 2
+ 			"DonutPlains1.state",
+			"DonutPlains4.state",
+ 			"IggyCastle.state",
+			"YoshiIsland1.state",
+			"YoshiIsland2.state"
 }
 
 --[[
@@ -25,7 +29,7 @@ _M.State = {
 _M.StartPowerup = 0
 
 _M.NeatConfig = {
-Filename = _M.PoolDir .. _M.State[1],
+LoopStates = false,
 Population = 300,
 DeltaDisjoint = 2.0,
 DeltaWeights = 0.4,
