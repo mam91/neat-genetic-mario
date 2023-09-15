@@ -56,12 +56,12 @@ Did some miscellaneous house-keeping, like moving global config settings into th
 CRC | MD5 | SHA1
 ------------- | ------------- | -------------
 B19ED489 | CDD3C8C37322978CA8669B34BC89C804 | 6B47BB75D16514B6A476AA0C73A683A2A4C18765
-3. Clone the repository or download the zip file and place the neat-mario folder in your \BizHawk-2.2\Lua\SNES\ folder. (like: BizHawk-2.2\Lua\SNES\neat-mario)
+3. Clone the repository or download the zip file and place the neat-mario folder in your \BizHawk-2.2.2\Lua\SNES\ folder. (like: BizHawk-2.2.2\Lua\SNES\neat-mario)
 4. Open config.lua and change variable _M.BizhawkDir to point on your BizHawk directory.
 5. Open BizHawk (EmuHawk.exe)
 6. Click File > Open ROM (Ctrl + O) and find Super Mario World (USA).sfc file. 
 7. Once loaded, click Tools > Lua Console
-8. In the new window, click Script > Open Script (Ctrl + O) and select mario-neat.lua in your \BizHawk-2.2\Lua\SNES\neat-mario folder.
+8. In the new window, click Script > Open Script (Ctrl + O) and select mario-neat.lua in your \BizHawk-2.2.2\Lua\SNES\neat-mario folder.
 9. The NEAT control window will display and you can then click Start to begin training.
 
 [1]:https://github.com/wts42/Neat-Genetic-Mario/wiki/MarI-O
