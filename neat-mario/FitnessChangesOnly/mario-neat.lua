@@ -964,7 +964,7 @@ function flipState()
 end
  
 function loadPool()
-	filename = forms.openfile("DP1.state.pool","C:\Users\mmill\Downloads\BizHawk-2.2\Lua\SNES\neat-mario\pool") 
+	filename = forms.openfile("DonutPlains1.state.pool","C:\Users\mmill\Downloads\BizHawk-2.2\Lua\SNES\neat-mario\pool") 
 	--local filename = forms.gettext(saveLoadFile)
 	forms.settext(saveLoadFile, filename)
 	loadFile(filename)
