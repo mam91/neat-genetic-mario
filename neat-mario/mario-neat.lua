@@ -8,6 +8,9 @@ mathFunctions = require "mathFunctions"
 Inputs = config.InputSize+1
 Outputs = #config.ButtonNames
 
+stateID = 1
+stateCount = #config.State
+
 function newInnovation()
 	pool.innovation = pool.innovation + 1
 	return pool.innovation
@@ -624,6 +627,15 @@ function newGeneration()
 	
 	pool.generation = pool.generation + 1
 	
+	if config.NeatConfig.LoopStates then
+		StateID = StateID + 1
+		if StateID == StateCount then
+			StateID = 1
+		end
+	end
+	
+	pool.maxFitness = 0
+	
 	--writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
 	writeFile(forms.gettext(saveLoadFile) .. ".gen" .. pool.generation .. ".pool")
 end
@@ -640,7 +652,7 @@ function initializePool()
 end
 
 function initializeRun()
-	savestate.load(config.NeatConfig.Filename);
+	savestate.load(config.StateDir .. config.State[stateID]);
 	if config.StartPowerup ~= NIL then
 		game.writePowerup(config.StartPowerup)
 	end
@@ -682,11 +694,6 @@ function evaluateCurrent()
 	joypad.set(controller)
 end
 
-if pool == nil then
-	initializePool()
-end
-
-
 function nextGenome()
 	pool.currentGenome = pool.currentGenome + 1
 	if pool.currentGenome > #pool.species[pool.currentSpecies].genomes then
@@ -705,12 +712,6 @@ function fitnessAlreadyMeasured()
 	
 	return genome.fitness ~= 0
 end
-
-form = forms.newform(500, 500, "Mario-Neat")
-netPicture = forms.pictureBox(form, 5, 250,470, 200)
-
-
---int forms.pictureBox(int formhandle, [int? x = null], [int? y = null], [int? width = null], [int? height = null]) 
 
 function displayGenome(genome)
 	forms.clear(netPicture,0x80808080)
@@ -746,7 +747,7 @@ function displayGenome(genome)
 		else
 			color = 0xFF000000
 		end
-		--gui.drawText(223, 24+8*o, config.ButtonNames[o], color, 9)
+		if config.GUIOverlay then gui.drawText(223, 24+8*o, config.ButtonNames[o], color, 9) end
 		forms.drawText(netPicture,223, 24+8*o, config.ButtonNames[o], color, 9)
 	end
 	
@@ -797,7 +798,7 @@ function displayGenome(genome)
 		end
 	end
 	
-	--gui.drawBox(50-config.BoxRadius*5-3,70-config.BoxRadius*5-3,50+config.BoxRadius*5+2,70+config.BoxRadius*5+2,0xFF000000, 0x80808080)
+	if config.GUIOverlay then gui.drawBox(50-config.BoxRadius*5-3,70-config.BoxRadius*5-3,50+config.BoxRadius*5+2,70+config.BoxRadius*5+2,0xFF000000, 0x80808080) end
 	forms.drawBox(netPicture, 50-config.BoxRadius*5-3,70-config.BoxRadius*5-3,50+config.BoxRadius*5+2,70+config.BoxRadius*5+2,0xFF000000, 0x80808080)
 	--oid forms.drawBox(int componenthandle, int x, int y, int x2, int y2, [color? line = null], [color? background = null]) 
 	for n,cell in pairs(cells) do
@@ -811,7 +812,7 @@ function displayGenome(genome)
 			end
 			color = opacity + color*0x10000 + color*0x100 + color
 			forms.drawBox(netPicture,cell.x-2,cell.y-2,cell.x+2,cell.y+2,opacity,color)
-			--gui.drawBox(cell.x-2,cell.y-2,cell.x+2,cell.y+2,opacity,color)
+			if config.GUIOverlay then gui.drawBox(cell.x-2,cell.y-2,cell.x+2,cell.y+2,opacity,color) end
 		end
 	end
 	for _,gene in pairs(genome.genes) do
@@ -829,17 +830,17 @@ function displayGenome(genome)
 			else
 				color = opacity + 0x800000 + 0x100*color
 			end
-			--gui.drawLine(c1.x+1, c1.y, c2.x-3, c2.y, color)
+			if config.GUIOverlay then gui.drawLine(c1.x+1, c1.y, c2.x-3, c2.y, color) end
 			forms.drawLine(netPicture,c1.x+1, c1.y, c2.x-3, c2.y, color)
 		end
 	end
 	
-	--gui.drawBox(49,71,51,78,0x00000000,0x80FF0000)
+	if config.GUIOverlay then gui.drawBox(49,71,51,78,0x00000000,0x80FF0000) end
 	forms.drawBox(netPicture, 49,71,51,78,0x00000000,0x80FF0000)
 	--if forms.ischecked(showMutationRates) then
 		local pos = 100
 		for mutation,rate in pairs(genome.mutationRates) do
-			--gui.drawText(100, pos, mutation .. ": " .. rate, 0xFF000000, 10)
+			if config.GUIOverlay then gui.drawText(100, pos, mutation .. ": " .. rate, 0xFF000000, 10) end
 			forms.drawText(netPicture,100, pos, mutation .. ": " .. rate, 0xFF000000, 10)
 			--forms.drawText(pictureBox,400,pos, mutation .. ": " .. rate)
 			
@@ -905,7 +906,7 @@ function mysplit(inputstr, sep)
 end
 
 function loadFile(filename)
-		print("Loading pool from " .. filename)
+	print("Loading pool from " .. filename)
         local file = io.open(filename, "r")
         pool = newPool()
         pool.generation = file:read("*number")
@@ -931,18 +932,11 @@ function loadFile(filename)
                         end
                         local numGenes = file:read("*number")
                         for n=1,numGenes do
-
+				
                                 local gene = newGene()
                                 local enabled
 								
-								local geneStr = file:read("*line")
-								local geneArr = mysplit(geneStr)
-								gene.into = tonumber(geneArr[1])
-								gene.out = tonumber(geneArr[2])
-								gene.weight = tonumber(geneArr[3])
-								gene.innovation = tonumber(geneArr[4])
-								enabled = tonumber(geneArr[5])
-
+				gene.into, gene.out, gene.weight, gene.innovation, enabled = file:read("*number", "*number", "*number", "*number", "*number")
 
                                 if enabled == 0 then
                                         gene.enabled = false
@@ -975,7 +969,7 @@ function flipState()
 end
  
 function loadPool()
-	filename = forms.openfile("DP1.state.pool",config.PoolDir) 
+	filename = forms.openfile("DonutPlains1.state.pool",config.PoolDir) 
 	--local filename = forms.gettext(saveLoadFile)
 	forms.settext(saveLoadFile, filename)
 	loadFile(filename)
@@ -1007,6 +1001,15 @@ function onExit()
 	forms.destroy(form)
 end
 
+if pool == nil then
+	initializePool()
+end
+
+form = forms.newform(500, 500, "Mario-Neat")
+netPicture = forms.pictureBox(form, 5, 250,470, 200)
+
+--int forms.pictureBox(int formhandle, [int? x = null], [int? y = null], [int? width = null], [int? height = null]) 
+
 writeFile(config.PoolDir.."temp.pool")
 
 event.onexit(onExit)
@@ -1032,7 +1035,7 @@ saveButton = forms.button(form, "Save", savePool, 5, 102)
 loadButton = forms.button(form, "Load", loadPool, 80, 102)
 playTopButton = forms.button(form, "Play Top", playTop, 230, 102)
 
-saveLoadFile = forms.textbox(form, config.NeatConfig.Filename .. ".pool", 170, 25, nil, 5, 148)
+saveLoadFile = forms.textbox(form, config.PoolDir .. config.TestName .. ".pool", 170, 25, nil, 5, 148)
 saveLoadLabel = forms.label(form, "Save/Load:", 5, 129)
 spritelist.InitSpriteList()
 spritelist.InitExtSpriteList()

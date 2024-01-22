@@ -1,22 +1,21 @@
 local _M = {}
 
---[[
-	Change BizhawkDir to your BizHawk directory.
---]]
---_M.BizhawkDir = "C:/Users/mmill/Downloads/BizHawk-2.2/"
-_M.BizhawkDir = "X:/B2_BizHawkLab/BizHawk-2.2.2/"
+_M.StateDir = "state/"
+_M.PoolDir = "pool/"
 
-_M.StateDir = _M.BizhawkDir .. "Lua/SNES/neat-mario/state/"
-_M.PoolDir = _M.BizhawkDir .. "Lua/SNES/neat-mario/pool/"
+_M.TestName = "test1"
 
 --[[
-	At the moment the first in list will get loaded.
-	Rearrange for other savestates. (will be redone soon)
+	If LoopStates in NeatConfig is enabled it will loop through the states in order changing states with each generation.
+	States currently have to be manually added to the list below as well as put in the state folder.
 --]]
+
 _M.State = {
- 			"DP1.state",				-- Donut Plains 1
-			"YI1.state",				-- Yoshi's Island 1
-			"YI2.state",				-- Yoshi's Island 2
+	"DonutPlains1.state",
+	-- "DonutPlains4.state",
+	-- "IggyCastle.state",
+	-- "YoshiIsland1.state",
+	-- "YoshiIsland2.state"
 }
 
 --[[
@@ -30,24 +29,23 @@ _M.State = {
 _M.StartPowerup = 0
 
 _M.NeatConfig = {
---Filename = "DP1.state",
-Filename = _M.PoolDir .. _M.State[1],
-Population = 300,
-DeltaDisjoint = 2.0,
-DeltaWeights = 0.4,
-DeltaThreshold = 1.0,
-StaleSpecies = 15,
-MutateConnectionsChance = 0.25,
-PerturbChance = 0.90,
-CrossoverChance = 0.75,
-LinkMutationChance = 2.0,
-NodeMutationChance = 0.50,
-BiasMutationChance = 0.40,
-StepSize = 0.1,
-DisableMutationChance = 0.4,
-EnableMutationChance = 0.2,
-TimeoutConstant = 20,
-MaxNodes = 1000000,
+	LoopStates = false,
+	Population = 300,
+	DeltaDisjoint = 2.0,
+	DeltaWeights = 0.4,
+	DeltaThreshold = 1.0,
+	StaleSpecies = 15,
+	MutateConnectionsChance = 0.25,
+	PerturbChance = 0.90,
+	CrossoverChance = 0.75,
+	LinkMutationChance = 2.0,
+	NodeMutationChance = 0.50,
+	BiasMutationChance = 0.40,
+	StepSize = 0.1,
+	DisableMutationChance = 0.4,
+	EnableMutationChance = 0.2,
+	TimeoutConstant = 20,
+	MaxNodes = 1000000,
 }
 
 _M.ButtonNames = {
@@ -62,6 +60,7 @@ _M.ButtonNames = {
 	}
 	
 _M.BoxRadius = 6
+_M.GUIOverlay = false
 _M.InputSize = (_M.BoxRadius*2+1)*(_M.BoxRadius*2+1)
 
 _M.Running = false
