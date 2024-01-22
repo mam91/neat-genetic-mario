@@ -747,7 +747,7 @@ function displayGenome(genome)
 		else
 			color = 0xFF000000
 		end
-		--gui.drawText(223, 24+8*o, config.ButtonNames[o], color, 9)
+		if config.GUIOverlay then gui.drawText(223, 24+8*o, config.ButtonNames[o], color, 9) end
 		forms.drawText(netPicture,223, 24+8*o, config.ButtonNames[o], color, 9)
 	end
 	
@@ -798,7 +798,7 @@ function displayGenome(genome)
 		end
 	end
 	
-	--gui.drawBox(50-config.BoxRadius*5-3,70-config.BoxRadius*5-3,50+config.BoxRadius*5+2,70+config.BoxRadius*5+2,0xFF000000, 0x80808080)
+	if config.GUIOverlay then gui.drawBox(50-config.BoxRadius*5-3,70-config.BoxRadius*5-3,50+config.BoxRadius*5+2,70+config.BoxRadius*5+2,0xFF000000, 0x80808080) end
 	forms.drawBox(netPicture, 50-config.BoxRadius*5-3,70-config.BoxRadius*5-3,50+config.BoxRadius*5+2,70+config.BoxRadius*5+2,0xFF000000, 0x80808080)
 	--oid forms.drawBox(int componenthandle, int x, int y, int x2, int y2, [color? line = null], [color? background = null]) 
 	for n,cell in pairs(cells) do
@@ -812,7 +812,7 @@ function displayGenome(genome)
 			end
 			color = opacity + color*0x10000 + color*0x100 + color
 			forms.drawBox(netPicture,cell.x-2,cell.y-2,cell.x+2,cell.y+2,opacity,color)
-			--gui.drawBox(cell.x-2,cell.y-2,cell.x+2,cell.y+2,opacity,color)
+			if config.GUIOverlay then gui.drawBox(cell.x-2,cell.y-2,cell.x+2,cell.y+2,opacity,color) end
 		end
 	end
 	for _,gene in pairs(genome.genes) do
@@ -830,17 +830,17 @@ function displayGenome(genome)
 			else
 				color = opacity + 0x800000 + 0x100*color
 			end
-			--gui.drawLine(c1.x+1, c1.y, c2.x-3, c2.y, color)
+			if config.GUIOverlay then gui.drawLine(c1.x+1, c1.y, c2.x-3, c2.y, color) end
 			forms.drawLine(netPicture,c1.x+1, c1.y, c2.x-3, c2.y, color)
 		end
 	end
 	
-	--gui.drawBox(49,71,51,78,0x00000000,0x80FF0000)
+	if config.GUIOverlay then gui.drawBox(49,71,51,78,0x00000000,0x80FF0000) end
 	forms.drawBox(netPicture, 49,71,51,78,0x00000000,0x80FF0000)
 	--if forms.ischecked(showMutationRates) then
 		local pos = 100
 		for mutation,rate in pairs(genome.mutationRates) do
-			--gui.drawText(100, pos, mutation .. ": " .. rate, 0xFF000000, 10)
+			if config.GUIOverlay then gui.drawText(100, pos, mutation .. ": " .. rate, 0xFF000000, 10) end
 			forms.drawText(netPicture,100, pos, mutation .. ": " .. rate, 0xFF000000, 10)
 			--forms.drawText(pictureBox,400,pos, mutation .. ": " .. rate)
 			

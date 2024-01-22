@@ -60,6 +60,7 @@ _M.ButtonNames = {
 	}
 	
 _M.BoxRadius = 6
+_M.GUIOverlay = false
 _M.InputSize = (_M.BoxRadius*2+1)*(_M.BoxRadius*2+1)
 
 _M.Running = false
